@@ -8,7 +8,6 @@ class AuthService {
   static const String _validEmail = 'dialloalioumadany@gmail.com';
   static const String _validPassword = '4glog123';
 
-  // Durée de validité de la session (24 heures)
   static const Duration _sessionDuration = Duration(hours: 24);
 
   static Future<bool> login(String email, String password) async {
@@ -31,18 +30,15 @@ class AuthService {
     
     if (!isLoggedIn) return false;
 
-    // Vérifier si la session n'a pas expiré
     final lastLogin = prefs.getInt(_lastLoginKey) ?? 0;
     final now = DateTime.now().millisecondsSinceEpoch;
     final sessionValid = (now - lastLogin) < _sessionDuration.inMilliseconds;
 
     if (!sessionValid) {
-      // Session expirée, déconnexion
       await logout();
       return false;
     }
 
-    // Mettre à jour le timestamp de dernière connexion
     await prefs.setInt(_lastLoginKey, now);
     return true;
   }
